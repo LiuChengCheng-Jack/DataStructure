@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+            <meta charset="utf-8">
+	<title>Calcuator</title>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/calcultor.js"></script>
+	<style type="text/css">
+                         *{
+	          	margin:0;
+	          	padding: 0;
+	          }
+	          html,body{
+	          	width: 100%;
+	          	height: 100%;
+	          }
+	         
+	          .mainT{
+	          	top:0%;
+	          	margin: 0% auto;
+	          	padding: 1% 0;
+	          	width: 50%;
+	          	height: 60%;
+	          	background-color: #DCDCDC;
+	          }
+	          #content{
+	          	margin: 0% auto;
+	          	padding: 1% 0;
+                          width: 88%;
+                          height: 10%;
+                          background-color: white;
+                          text-align: right;
+                          padding:0 2%; 
+                          border: 1px solid black;
+	          }
+	          button{
+	          	width:20%;
+	          	height: 60px;
+                          margin: 0 2%;
+	          }
+	         /* .b{
+	          	background-color: white;
+	          }*/
+                       .row{
+                       	text-align: center;
+                       	margin:1% auto;
+                       }
+	</style>
+</head>
+<body>
+    <div class="mainT">
+        <div id="content">0</div>
+        <div class="btn">  
+              <div class="row">
+               <button id="btnZero">C</button><button  id="btnDe">delete</button><button  id="btnDiv">/</button><button  id="btnMul">*</button>
+            </div>
+            <div class="row">
+               <button id="btn7">7</button><button  id="btn8">8</button><button  id="btn9">9</button><button  id="btnPlus">-</button>
+            </div>
+              <div class="row">
+               <button  id="btn4">4</button><button  id="btn5">5</button><button  id="btn6">6</button><button  id="btnAdd">+</button>
+            </div>
+            <div class="row">
+               <button  id="btn1">1</button><button  id="btn2">2</button><button  id="btn3">3</button><button  id="btnPoint">.</button>
+            </div>
+              <div class="row">
+               <button  id="btn0">0</button><button  id="btnLe">(</button><button  id="btnRi">)</button><button  id="btnEqual">=</button>
+            </div>
+
+            </div>  
+        </div>
+    </div>
+    <script type="text/javascript">
+
+       $(document).ready(function(){
+            listenBtn();
+       });
+      function changeContent(s) {
+ 	var t = $('#content').text();
+ 	if (examine(t, s)) {
+ 		var f = t.charAt(0);
+ 		if (f == '=') {
+ 			t = t.slice(1);
+ 			if (typeof s=='number') {
+ 				$('#content').text(s);
+ 			} else {
+ 				if (s == '(') {
+ 					$('#content').text(s);
+ 				} 
+ 				else if (s == ')') {
+ 					$('#content').text('0');
+ 				} 
+ 				else {
+ 					$('#content').text(t + s);
+ 				}
+ 			}
+ 		} else {
+ 			if (t == '0' && typeof s=='number') {
+ 				$('#content').text(s);
+ 			} else {
+ 				if ((s == '(') && t == '0') {
+ 					$('#content').text(s);
+ 				} 
+ 				else if((s == ')') && t == '0'){
+ 					$('#content').text('0');
+ 				}
+ 				else {
+ 					$('#content').text(t + s);
+ 				}
+
+ 			}
+ 		}
+ 	}
+ }
+      function examine(t,s){//只考虑t!='0'的情况
+              var back=false;
+              if (t=='0'||t.charAt(0)=='=') {
+                     back=true;
+              }
+              else {
+              	var k=t.charAt(t.length-1);
+                           var type1=getType(k);
+                           var type2=-1;
+                           if (typeof s=='number') {
+                                 type2=0;
+                           }
+                           else {
+                           	type2=getType(s);
+                           }
+              	back=compareType(type1,type2);
+              	if (branketsMatch(t+s)<0) {
+                               back=false;
+              	}
+              }
+             return back;
+      }
+      function compareType(type1,type2){
+      	var back=true;
+      	if (type1==0) {
+                  if (type2==2) {
+                       back=false;
+                  }
+      	}
+      	else if(type1==1){
+      		if (type2==3) {
+      			back=false;
+      		}
+      	}
+      	else if(type1==2){
+      		if (type2==1||type2==3) {
+      			back=false;
+      		}
+      	}
+      	else if(type1==3){
+      		if (type2==0) {
+      			back=false;
+      		}
+      	}
+      	return back;
+      }
+      function getType(s){
+      	var back=-1;
+      	switch (s) {
+      		case '0':
+      		case '1':
+      		case '2':
+      		case '3':
+      		case '4':
+      		case '5':
+      		case '6':
+      		case '7':
+      		case '8':
+      		case '9':
+      			back=0;
+      			break;
+                         case '+':
+      		case '-':
+      		case '*':
+      		case '/':
+      		            back=1;
+      			break;
+      		case '(':
+      		            back=2;
+      			break;
+      		case ')':
+      		            back=3;
+      			break;
+      		default:
+      			// statements_def
+      			break;
+      	}
+      	return back;
+      }
+     function branketsMatch(s)//查看是否满足括号匹配
+     {
+          var back=true;
+          var number=0;
+          for(var i=0;i<s.length;i++)
+          {
+          	if (s.charAt(i)=='(') {
+          	     number++;
+          	}
+          	else if (s.charAt(i)==')') {
+          	      if(number==0)
+          	      {
+          	      	number=-1;
+          	      	break;
+          	      }
+          	      else {
+          	      	number--;
+          	      }
+          	}
+          }
+          return number;
+     }
+      function listenBtn(){
+            for(var i=0;i<10;i++){
+                  var s='#btn'+i;
+                  (function(i){
+                          $(s).click(function(event) {
+                  	         /* Act on the event */
+                  	          changeContent(i);
+                             }); 
+                  })(i);  
+              }
+              var opName=['Div','Mul','Plus','Add','Le','Ri'];
+              var  op=['/','*','-','+','(',')'];
+              for(var j=0;j<opName.length;j++){
+                   var s='#btn'+opName[j];
+                   (function(j){
+                       $(s).click(function(event) {
+                  	         /* Act on the event */
+                  	          
+                  	          changeContent(op[j]);
+                             }); 
+                   })(j);
+              }
+             $('#btnDe').click(function(){
+                     var s=$('#content').text();
+                     var f=s.charAt(0);
+                     if (f!='=') {
+                     	  if (s.length>1) {
+                     	$('#content').text(s.slice(0,s.length-1));
+                     }
+                     else {
+                     	$('#content').text('0');
+                     }     
+                     }
+                   
+             });
+             $('#btnZero').click(function(){
+             	$('#content').text('0');
+             });
+             $('#btnEqual').click(function(){
+                  var s=$('#content').text();
+                  if (branketsMatch(s)==0) {
+                  	 var c=new Calculators(s+'#');
+                           var result=c.calculate();
+                           $('#content').text('='+result);
+                  }
+                 else {
+                 	alert('Brackets not match');
+                 }
+             });
+      }
+    </script>
+</body>
+</html>
