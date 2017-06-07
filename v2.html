@@ -32,6 +32,18 @@
                           text-align: right;
                           padding:0 2%; 
                           border: 1px solid black;
+                          overflow: hidden;
+	          }
+	           #content2{
+	          	margin: 0% auto;
+	          	padding: 1% 0;
+                          width: 88%;
+                          height: 10%;
+                          background-color: white;
+                          text-align: right;
+                          padding:0 2%; 
+                          border: 1px solid black;
+                          overflow: hidden;
 	          }
 	          button{
 	          	width:20%;
@@ -48,9 +60,9 @@
 	</style>
 </head>
 <body>
-<a href="v2.html">version2</a>
     <div class="mainT">
         <div id="content">0</div>
+        <div id="content2">0</div>
         <div class="btn">  
               <div class="row">
                <button id="btnZero">C</button><button  id="btnDe">delete</button><button  id="btnDiv">/</button><button  id="btnMul">*</button>
@@ -71,10 +83,10 @@
             </div>  
         </div>
     </div>
-    
     <script type="text/javascript">
 
        $(document).ready(function(){
+       	$('#content2').css('display','none');
             listenBtn();
        });
       function changeContent(s) {
@@ -112,6 +124,18 @@
 
  			}
  		}
+ 	    var l=$('#content').text().length;
+ 	    var l2=$('#content2').text().length;
+ 	    if(l>40)
+ 	    {
+ 	    	$('#content2').css('display','inherit');
+ 	    	$('#content2').text($('#content').text().slice(l-20));
+ 	    	$('#content').css('display','none');
+ 	    }
+ 	    else {
+ 	    	$('#content').css('display','inherit');
+ 	    	$('#content2').css('display','none');
+ 	    }
  	}
  }
       function examine(t,s){//只考虑t!='0'的情况
@@ -241,16 +265,27 @@
                      var s=$('#content').text();
                      var f=s.charAt(0);
                      if (f!='=') {
-                     	  if (s.length>1) {
-                     	$('#content').text(s.slice(0,s.length-1));
-                     }
-                     else {
-                     	$('#content').text('0');
-                     }     
+                     	     if (s.length>1) {
+                     	         $('#content').text(s.slice(0,s.length-1));
+
+                     	         if(s.length-1<40){
+                     	         	$('#content').css('display','inherit');
+ 	    	             $('#content2').css('display','none');
+                     	         }
+                     	         else {
+                     	         	$('#content2').text($('#content').text().slice(s.length-41));
+                     	         }
+                            }
+                           else {
+                     	          $('#content').text('0');
+                           }     
                      }
                    
              });
              $('#btnZero').click(function(){
+
+             	$('#content').css('display','inherit');
+ 	    	$('#content2').css('display','none');
              	$('#content').text('0');
              });
              $('#btnEqual').click(function(){
@@ -259,6 +294,8 @@
                   	 var c=new Calculators(s+'#');
                            var result=c.calculate();
                            $('#content').text('='+result);
+                           $('#content').css('display','inherit');
+ 	    	$('#content2').css('display','none');
                   }
                  else {
                  	alert('Brackets not match');
